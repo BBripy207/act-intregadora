@@ -26,12 +26,17 @@ function App() {
         setForm({ ...form, [name]: value });
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        axios.post(`${backendUrl}/rentals`, form)
+    const handleRent = (characterId) => {
+        const duration = prompt('Ingrese la duración de la renta (en horas):');
+        const price = prompt('Ingrese el precio de la renta:');
+        if (!duration || !price) {
+            alert('Debe ingresar duración y precio para realizar la renta.');
+            return;
+        }
+
+        axios.post(`${backendUrl}/rentals`, { character_id: characterId, duration, price })
             .then(() => {
                 alert('Renta realizada con éxito');
-                setForm({ character_id: '', duration: '', price: '' });
                 return axios.get(`${backendUrl}/rentals`);
             })
             .then(response => setRentals(response.data))
@@ -41,63 +46,37 @@ function App() {
     return (
         <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
             <h1>Personajes de Star Wars</h1>
-            <table border="1" cellPadding="10" cellSpacing="0" style={{ width: '100%', textAlign: 'left' }}>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Descripción</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {characters.map(character => (
-                        <tr key={character.id}>
-                            <td>{character.id}</td>
-                            <td>{character.name}</td>
-                            <td>{character.description}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-
-            <h2>Realizar una Renta</h2>
-            <form onSubmit={handleSubmit}>
-                <label>
-                    Personaje:
-                    <select name="character_id" value={form.character_id} onChange={handleInputChange}>
-                        <option value="">Seleccionar</option>
-                        {characters.map(character => (
-                            <option key={character.id} value={character.id}>
-                                {character.name}
-                            </option>
-                        ))}
-                    </select>
-                </label>
-                <br />
-                <label>
-                    Duración (horas):
-                    <input
-                        type="number"
-                        name="duration"
-                        value={form.duration}
-                        onChange={handleInputChange}
-                        required
-                    />
-                </label>
-                <br />
-                <label>
-                    Precio:
-                    <input
-                        type="number"
-                        name="price"
-                        value={form.price}
-                        onChange={handleInputChange}
-                        required
-                    />
-                </label>
-                <br />
-                <button type="submit">Rentar</button>
-            </form>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+                {characters.map(character => (
+                    <div
+                        key={character.id}
+                        style={{
+                            border: '1px solid #ccc',
+                            borderRadius: '8px',
+                            padding: '20px',
+                            width: '200px',
+                            textAlign: 'center',
+                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+                        }}
+                    >
+                        <h2>{character.name}</h2>
+                        <p>{character.description}</p>
+                        <button
+                            onClick={() => handleRent(character.id)}
+                            style={{
+                                backgroundColor: '#007BFF',
+                                color: '#fff',
+                                border: 'none',
+                                padding: '10px 15px',
+                                borderRadius: '5px',
+                                cursor: 'pointer'
+                            }}
+                        >
+                            Rentar
+                        </button>
+                    </div>
+                ))}
+            </div>
 
             <h2>Rentas Realizadas</h2>
             <table border="1" cellPadding="10" cellSpacing="0" style={{ width: '100%', textAlign: 'left' }}>
