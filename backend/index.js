@@ -42,6 +42,19 @@ db.serialize(() => {
     stmt.finalize();
 });
 
+// Crear tabla de rentas
+db.serialize(() => {
+    db.run(`
+        CREATE TABLE rentals (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            character_id INTEGER NOT NULL,
+            duration INTEGER NOT NULL,
+            price REAL NOT NULL,
+            FOREIGN KEY (character_id) REFERENCES characters (id)
+        )
+    `);
+});
+
 // Endpoint para obtener todos los personajes
 app.get('/characters', (req, res) => {
     db.all('SELECT * FROM characters', [], (err, rows) => {
@@ -67,6 +80,32 @@ app.get('/characters/:id', (req, res) => {
             return;
         }
         res.json(row);
+    });
+});
+
+// Endpoint para realizar una renta
+app.post('/rentals', (req, res) => {
+    const { character_id, duration, price } = req.body;
+    if (!character_id || !duration || !price) {
+        return res.status(400).json({ error: 'Todos los campos son obligatorios' });
+    }
+    const stmt = db.prepare('INSERT INTO rentals (character_id, duration, price) VALUES (?, ?, ?)');
+    stmt.run(character_id, duration, price, function (err) {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        res.status(201).json({ id: this.lastID });
+    });
+    stmt.finalize();
+});
+
+// Endpoint para listar las rentas
+app.get('/rentals', (req, res) => {
+    db.all('SELECT * FROM rentals', [], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        res.json(rows);
     });
 });
 
