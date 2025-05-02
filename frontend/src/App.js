@@ -9,7 +9,7 @@ const backendUrl = window.location.hostname === 'localhost'
 function App() {
     const [characters, setCharacters] = useState([]);
     const [rentals, setRentals] = useState([]);
-    const [form, setForm] = useState({ character_id: '', duration: '', price: '' });
+    const [form, setForm] = useState({ character_id: '', duration: '' });
 
     useEffect(() => {
         axios.get(`${backendUrl}/characters`)
@@ -28,13 +28,12 @@ function App() {
 
     const handleRent = (characterId) => {
         const duration = prompt('Ingrese la duración de la renta (en horas):');
-        const price = prompt('Ingrese el precio de la renta:');
-        if (!duration || !price) {
-            alert('Debe ingresar duración y precio para realizar la renta.');
+        if (!duration) {
+            alert('Debe ingresar una duración.');
             return;
         }
 
-        axios.post(`${backendUrl}/rentals`, { character_id: characterId, duration, price })
+        axios.post(`${backendUrl}/rentals`, { character_id: characterId, duration })
             .then(() => {
                 alert('Renta realizada con éxito');
                 return axios.get(`${backendUrl}/rentals`);
@@ -83,18 +82,18 @@ function App() {
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>ID Personaje</th>
-                        <th>Duración</th>
-                        <th>Precio</th>
+                        <th>Personaje</th>
+                        <th>Duración (horas)</th>
+                        <th>Precio Total</th>
                     </tr>
                 </thead>
                 <tbody>
                     {rentals.map(rental => (
                         <tr key={rental.id}>
                             <td>{rental.id}</td>
-                            <td>{rental.character_id}</td>
+                            <td>{rental.character_name}</td>
                             <td>{rental.duration}</td>
-                            <td>{rental.price}</td>
+                            <td>${rental.total_price}</td> {/* Mostrar el precio total */}
                         </tr>
                     ))}
                 </tbody>

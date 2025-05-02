@@ -85,10 +85,14 @@ app.get('/characters/:id', (req, res) => {
 
 // Endpoint para realizar una renta
 app.post('/rentals', (req, res) => {
-    const { character_id, duration, price } = req.body;
-    if (!character_id || !duration || !price) {
+    const { character_id, duration } = req.body;
+    const pricePerHour = 200; // Precio fijo por hora
+    const price = duration * pricePerHour;
+
+    if (!character_id || !duration) {
         return res.status(400).json({ error: 'Todos los campos son obligatorios' });
     }
+
     const stmt = db.prepare('INSERT INTO rentals (character_id, duration, price) VALUES (?, ?, ?)');
     stmt.run(character_id, duration, price, function (err) {
         if (err) {
@@ -99,13 +103,23 @@ app.post('/rentals', (req, res) => {
     stmt.finalize();
 });
 
-// Endpoint para listar las rentas
+// Endpoint para listar las rentas con el nombre del personaje y precio total
 app.get('/rentals', (req, res) => {
-    db.all('SELECT * FROM rentals', [], (err, rows) => {
+    const query = `
+        SELECT rentals.id, rentals.duration, rentals.price, characters.name AS character_name
+        FROM rentals
+        JOIN characters ON rentals.character_id = characters.id
+    `;
+    db.all(query, [], (err, rows) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
-        res.json(rows);
+        // Calcular el precio total para cada renta
+        const rentalsWithTotal = rows.map(rental => ({
+            ...rental,
+            total_price: rental.price // Asegurarse de usar el campo `price` directamente
+        }));
+        res.json(rentalsWithTotal);
     });
 });
 
