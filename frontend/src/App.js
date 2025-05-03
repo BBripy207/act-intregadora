@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import fondo from './imagenes/fondo.jpeg'; // Importar la imagen
 
 // Determinar la URL base del backend
 const backendUrl = window.location.hostname === 'localhost'
@@ -51,7 +52,17 @@ function App() {
     };
 
     return (
-        <div style={{ padding: '20px', fontFamily: 'Star Jedi, Arial, sans-serif', backgroundColor: '#000', color: '#FFE81F', minHeight: '100vh' }}>
+        <div
+            style={{
+                padding: '20px',
+                fontFamily: 'Star Jedi, Arial, sans-serif',
+                backgroundImage: `url(${fondo})`, // Usar la imagen como fondo
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                color: '#FFE81F',
+                minHeight: '100vh'
+            }}
+        >
             <h1 style={{ textAlign: 'center', fontSize: '3rem', textShadow: '0 0 10px #FFE81F' }}>Star Wars App</h1>
             <div style={{ marginBottom: '20px', textAlign: 'center' }}>
                 <button
