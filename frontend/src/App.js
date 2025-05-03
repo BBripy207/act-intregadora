@@ -13,42 +13,48 @@ function App() {
     const [selectedCharacter, setSelectedCharacter] = useState(null);
     const [duration, setDuration] = useState('');
     const [activeTab, setActiveTab] = useState('characters'); // Pestaña activa
+    const [notification, setNotification] = useState(null); // Estado para notificaciones
 
     useEffect(() => {
         axios.get(`${backendUrl}/characters`)
             .then(response => setCharacters(response.data))
-            .catch(error => console.error('Error fetching characters:', error));
+            .catch(error => showNotification('Error al cargar los personajes', 'error'));
 
         axios.get(`${backendUrl}/rentals`)
             .then(response => setRentals(response.data))
-            .catch(error => console.error('Error fetching rentals:', error));
+            .catch(error => showNotification('Error al cargar las rentas', 'error'));
     }, []);
+
+    const showNotification = (message, type) => {
+        setNotification({ message, type });
+        setTimeout(() => setNotification(null), 3000); // Ocultar después de 3 segundos
+    };
 
     const handleRent = () => {
         if (!duration || isNaN(duration) || duration <= 0) {
-            alert('Debe ingresar una duración válida.');
+            showNotification('Debe ingresar una duración válida.', 'error');
             return;
         }
 
         axios.post(`${backendUrl}/rentals`, { character_id: selectedCharacter.id, duration })
             .then(() => {
-                alert('Renta realizada con éxito');
+                showNotification('Renta realizada con éxito.', 'success');
                 setDuration('');
                 setSelectedCharacter(null);
                 return axios.get(`${backendUrl}/rentals`);
             })
             .then(response => setRentals(response.data))
-            .catch(error => console.error('Error creating rental:', error));
+            .catch(error => showNotification('Error al realizar la renta.', 'error'));
     };
 
     const handleCancelRental = (rentalId) => {
         axios.delete(`${backendUrl}/rentals/${rentalId}`)
             .then(() => {
-                alert('Renta cancelada con éxito');
+                showNotification('Renta cancelada con éxito.', 'success');
                 return axios.get(`${backendUrl}/rentals`);
             })
             .then(response => setRentals(response.data))
-            .catch(error => console.error('Error canceling rental:', error));
+            .catch(error => showNotification('Error al cancelar la renta.', 'error'));
     };
 
     return (
@@ -60,9 +66,33 @@ function App() {
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 color: '#FFE81F',
-                minHeight: '100vh'
+                minHeight: '100vh',
+                position: 'relative'
             }}
         >
+            {/* Notificación personalizada */}
+            {notification && (
+                <div
+                    style={{
+                        position: 'fixed',
+                        top: '10px',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        backgroundColor: notification.type === 'success' ? '#28a745' : '#dc3545',
+                        color: '#fff',
+                        padding: '10px 20px',
+                        borderRadius: '5px',
+                        boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
+                        zIndex: 1000,
+                        textAlign: 'center',
+                        fontSize: '1rem',
+                        textTransform: 'uppercase'
+                    }}
+                >
+                    {notification.message}
+                </div>
+            )}
+
             <h1 style={{ textAlign: 'center', fontSize: '3rem', textShadow: '0 0 10px #FFE81F' }}>Star Wars App</h1>
             <div style={{ marginBottom: '20px', textAlign: 'center' }}>
                 <button
