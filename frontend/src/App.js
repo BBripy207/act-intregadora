@@ -110,19 +110,29 @@ function App() {
                                     border: '1px solid #FFE81F',
                                     borderRadius: '8px',
                                     padding: '20px',
-                                    width: '250px',
+                                    width: '250px', // Tamaño uniforme para las tarjetas
+                                    height: '400px', // Altura uniforme para las tarjetas
                                     textAlign: 'center',
                                     boxShadow: '0 0 10px #FFE81F',
-                                    backgroundColor: '#111'
+                                    backgroundColor: '#111',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'space-between'
                                 }}
                             >
                                 <img
                                     src={images[character.name]}
                                     alt={character.name}
-                                    style={{ width: '100%', borderRadius: '8px', marginBottom: '10px' }}
+                                    style={{
+                                        width: '100%',
+                                        height: '200px', // Tamaño uniforme para las imágenes
+                                        objectFit: 'cover', // Ajustar la imagen sin deformarla
+                                        borderRadius: '8px',
+                                        marginBottom: '10px'
+                                    }}
                                 />
                                 <h2 style={{ color: '#FFE81F', fontSize: '1.5rem' }}>{character.name}</h2>
-                                <p style={{ color: '#FFF' }}>{character.description}</p>
+                                <p style={{ color: '#FFF', flexGrow: 1 }}>{character.description}</p>
                                 <p><strong>Precio por hora:</strong> $200</p>
                                 <button
                                     onClick={() => setSelectedCharacter(character)}
@@ -164,14 +174,25 @@ function App() {
                                     borderRadius: '8px',
                                     padding: '20px',
                                     width: '400px',
+                                    maxHeight: '90vh', // Limitar la altura máxima del modal
+                                    overflowY: 'auto', // Habilitar scroll si el contenido excede la altura
                                     boxShadow: '0 0 20px #FFE81F',
-                                    color: '#FFE81F'
+                                    color: '#FFE81F',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center'
                                 }}
                             >
                                 <img
                                     src={images[selectedCharacter.name]}
                                     alt={selectedCharacter.name}
-                                    style={{ width: '100%', borderRadius: '8px', marginBottom: '10px' }}
+                                    style={{
+                                        width: '100%',
+                                        maxHeight: '200px', // Limitar la altura máxima de la imagen
+                                        objectFit: 'cover',
+                                        borderRadius: '8px',
+                                        marginBottom: '10px'
+                                    }}
                                 />
                                 <h2>{selectedCharacter.name}</h2>
                                 <p>{selectedCharacter.description}</p>
@@ -183,7 +204,14 @@ function App() {
                                         value={duration}
                                         onChange={(e) => setDuration(e.target.value)}
                                         min="0"
-                                        style={{ width: '100%', margin: '10px 0', padding: '8px', backgroundColor: '#222', color: '#FFE81F', border: '1px solid #FFE81F' }}
+                                        style={{
+                                            width: '100%',
+                                            margin: '10px 0',
+                                            padding: '8px',
+                                            backgroundColor: '#222',
+                                            color: '#FFE81F',
+                                            border: '1px solid #FFE81F'
+                                        }}
                                     />
                                 </label>
                                 <button
