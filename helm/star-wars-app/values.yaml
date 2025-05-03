@@ -1,0 +1,19 @@
+replicaCount: 2
+
+image:
+  repository: star-wars-app
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: star-wars.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
