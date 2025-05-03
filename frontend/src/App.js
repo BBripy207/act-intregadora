@@ -51,19 +51,22 @@ function App() {
     };
 
     return (
-        <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-            <h1>Star Wars App</h1>
-            <div style={{ marginBottom: '20px' }}>
+        <div style={{ padding: '20px', fontFamily: 'Star Jedi, Arial, sans-serif', backgroundColor: '#000', color: '#FFE81F', minHeight: '100vh' }}>
+            <h1 style={{ textAlign: 'center', fontSize: '3rem', textShadow: '0 0 10px #FFE81F' }}>Star Wars App</h1>
+            <div style={{ marginBottom: '20px', textAlign: 'center' }}>
                 <button
                     onClick={() => setActiveTab('characters')}
                     style={{
                         padding: '10px 20px',
                         marginRight: '10px',
-                        backgroundColor: activeTab === 'characters' ? '#007BFF' : '#ccc',
-                        color: '#fff',
+                        backgroundColor: activeTab === 'characters' ? '#FFE81F' : '#444',
+                        color: activeTab === 'characters' ? '#000' : '#FFE81F',
                         border: 'none',
                         borderRadius: '5px',
-                        cursor: 'pointer'
+                        cursor: 'pointer',
+                        fontSize: '1.2rem',
+                        textTransform: 'uppercase',
+                        boxShadow: '0 0 10px #FFE81F'
                     }}
                 >
                     Personajes
@@ -72,11 +75,14 @@ function App() {
                     onClick={() => setActiveTab('rentals')}
                     style={{
                         padding: '10px 20px',
-                        backgroundColor: activeTab === 'rentals' ? '#007BFF' : '#ccc',
-                        color: '#fff',
+                        backgroundColor: activeTab === 'rentals' ? '#FFE81F' : '#444',
+                        color: activeTab === 'rentals' ? '#000' : '#FFE81F',
                         border: 'none',
                         borderRadius: '5px',
-                        cursor: 'pointer'
+                        cursor: 'pointer',
+                        fontSize: '1.2rem',
+                        textTransform: 'uppercase',
+                        boxShadow: '0 0 10px #FFE81F'
                     }}
                 >
                     Rentas Realizadas
@@ -85,31 +91,35 @@ function App() {
 
             {activeTab === 'characters' && (
                 <div>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', justifyContent: 'center' }}>
                         {characters.map(character => (
                             <div
                                 key={character.id}
                                 style={{
-                                    border: '1px solid #ccc',
+                                    border: '1px solid #FFE81F',
                                     borderRadius: '8px',
                                     padding: '20px',
-                                    width: '200px',
+                                    width: '250px',
                                     textAlign: 'center',
-                                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+                                    boxShadow: '0 0 10px #FFE81F',
+                                    backgroundColor: '#111'
                                 }}
                             >
-                                <h2>{character.name}</h2>
-                                <p>{character.description}</p>
+                                <h2 style={{ color: '#FFE81F', fontSize: '1.5rem' }}>{character.name}</h2>
+                                <p style={{ color: '#FFF' }}>{character.description}</p>
                                 <p><strong>Precio por hora:</strong> $200</p>
                                 <button
                                     onClick={() => setSelectedCharacter(character)}
                                     style={{
-                                        backgroundColor: '#007BFF',
-                                        color: '#fff',
+                                        backgroundColor: '#FFE81F',
+                                        color: '#000',
                                         border: 'none',
                                         padding: '10px 15px',
                                         borderRadius: '5px',
-                                        cursor: 'pointer'
+                                        cursor: 'pointer',
+                                        fontSize: '1rem',
+                                        textTransform: 'uppercase',
+                                        boxShadow: '0 0 10px #FFE81F'
                                     }}
                                 >
                                     Ver Detalles
@@ -126,7 +136,7 @@ function App() {
                                 left: '0',
                                 width: '100%',
                                 height: '100%',
-                                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
                                 display: 'flex',
                                 justifyContent: 'center',
                                 alignItems: 'center'
@@ -134,11 +144,12 @@ function App() {
                         >
                             <div
                                 style={{
-                                    backgroundColor: '#fff',
+                                    backgroundColor: '#111',
                                     borderRadius: '8px',
                                     padding: '20px',
                                     width: '400px',
-                                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'
+                                    boxShadow: '0 0 20px #FFE81F',
+                                    color: '#FFE81F'
                                 }}
                             >
                                 <h2>{selectedCharacter.name}</h2>
@@ -151,7 +162,7 @@ function App() {
                                         value={duration}
                                         onChange={(e) => setDuration(e.target.value)}
                                         min="0"
-                                        style={{ width: '100%', margin: '10px 0', padding: '8px' }}
+                                        style={{ width: '100%', margin: '10px 0', padding: '8px', backgroundColor: '#222', color: '#FFE81F', border: '1px solid #FFE81F' }}
                                     />
                                 </label>
                                 <button
@@ -163,7 +174,8 @@ function App() {
                                         padding: '10px 15px',
                                         borderRadius: '5px',
                                         cursor: 'pointer',
-                                        marginRight: '10px'
+                                        marginRight: '10px',
+                                        textTransform: 'uppercase'
                                     }}
                                 >
                                     Rentar
@@ -176,7 +188,8 @@ function App() {
                                         border: 'none',
                                         padding: '10px 15px',
                                         borderRadius: '5px',
-                                        cursor: 'pointer'
+                                        cursor: 'pointer',
+                                        textTransform: 'uppercase'
                                     }}
                                 >
                                     Cerrar
@@ -189,8 +202,8 @@ function App() {
 
             {activeTab === 'rentals' && (
                 <div>
-                    <h2>Rentas Realizadas</h2>
-                    <table border="1" cellPadding="10" cellSpacing="0" style={{ width: '100%', textAlign: 'left' }}>
+                    <h2 style={{ textAlign: 'center', textShadow: '0 0 10px #FFE81F' }}>Rentas Realizadas</h2>
+                    <table border="1" cellPadding="10" cellSpacing="0" style={{ width: '100%', textAlign: 'left', backgroundColor: '#111', color: '#FFE81F', border: '1px solid #FFE81F' }}>
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -216,7 +229,8 @@ function App() {
                                                 border: 'none',
                                                 padding: '5px 10px',
                                                 borderRadius: '5px',
-                                                cursor: 'pointer'
+                                                cursor: 'pointer',
+                                                textTransform: 'uppercase'
                                             }}
                                         >
                                             Cancelar
