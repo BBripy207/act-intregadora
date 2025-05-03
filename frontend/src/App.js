@@ -9,7 +9,8 @@ const backendUrl = window.location.hostname === 'localhost'
 function App() {
     const [characters, setCharacters] = useState([]);
     const [rentals, setRentals] = useState([]);
-    const [form, setForm] = useState({ character_id: '', duration: '' });
+    const [selectedCharacter, setSelectedCharacter] = useState(null);
+    const [duration, setDuration] = useState('');
 
     useEffect(() => {
         axios.get(`${backendUrl}/characters`)
@@ -21,21 +22,17 @@ function App() {
             .catch(error => console.error('Error fetching rentals:', error));
     }, []);
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setForm({ ...form, [name]: value });
-    };
-
-    const handleRent = (characterId) => {
-        const duration = prompt('Ingrese la duración de la renta (en horas):');
-        if (!duration) {
-            alert('Debe ingresar una duración.');
+    const handleRent = () => {
+        if (!duration || isNaN(duration) || duration <= 0) {
+            alert('Debe ingresar una duración válida.');
             return;
         }
 
-        axios.post(`${backendUrl}/rentals`, { character_id: characterId, duration })
+        axios.post(`${backendUrl}/rentals`, { character_id: selectedCharacter.id, duration })
             .then(() => {
                 alert('Renta realizada con éxito');
+                setDuration('');
+                setSelectedCharacter(null);
                 return axios.get(`${backendUrl}/rentals`);
             })
             .then(response => setRentals(response.data))
@@ -60,8 +57,9 @@ function App() {
                     >
                         <h2>{character.name}</h2>
                         <p>{character.description}</p>
+                        <p><strong>Precio por hora:</strong> $200</p>
                         <button
-                            onClick={() => handleRent(character.id)}
+                            onClick={() => setSelectedCharacter(character)}
                             style={{
                                 backgroundColor: '#007BFF',
                                 color: '#fff',
@@ -71,11 +69,77 @@ function App() {
                                 cursor: 'pointer'
                             }}
                         >
-                            Rentar
+                            Ver Detalles
                         </button>
                     </div>
                 ))}
             </div>
+
+            {selectedCharacter && (
+                <div
+                    style={{
+                        position: 'fixed',
+                        top: '0',
+                        left: '0',
+                        width: '100%',
+                        height: '100%',
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}
+                >
+                    <div
+                        style={{
+                            backgroundColor: '#fff',
+                            borderRadius: '8px',
+                            padding: '20px',
+                            width: '400px',
+                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'
+                        }}
+                    >
+                        <h2>{selectedCharacter.name}</h2>
+                        <p>{selectedCharacter.description}</p>
+                        <p><strong>Precio por hora:</strong> $200</p>
+                        <label>
+                            Duración (horas):
+                            <input
+                                type="number"
+                                value={duration}
+                                onChange={(e) => setDuration(e.target.value)}
+                                style={{ width: '100%', margin: '10px 0', padding: '8px' }}
+                            />
+                        </label>
+                        <button
+                            onClick={handleRent}
+                            style={{
+                                backgroundColor: '#28a745',
+                                color: '#fff',
+                                border: 'none',
+                                padding: '10px 15px',
+                                borderRadius: '5px',
+                                cursor: 'pointer',
+                                marginRight: '10px'
+                            }}
+                        >
+                            Rentar
+                        </button>
+                        <button
+                            onClick={() => setSelectedCharacter(null)}
+                            style={{
+                                backgroundColor: '#dc3545',
+                                color: '#fff',
+                                border: 'none',
+                                padding: '10px 15px',
+                                borderRadius: '5px',
+                                cursor: 'pointer'
+                            }}
+                        >
+                            Cerrar
+                        </button>
+                    </div>
+                </div>
+            )}
 
             <h2>Rentas Realizadas</h2>
             <table border="1" cellPadding="10" cellSpacing="0" style={{ width: '100%', textAlign: 'left' }}>
@@ -93,7 +157,7 @@ function App() {
                             <td>{rental.id}</td>
                             <td>{rental.character_name}</td>
                             <td>{rental.duration}</td>
-                            <td>${rental.total_price}</td> {/* Mostrar el precio total */}
+                            <td>${rental.price}</td>
                         </tr>
                     ))}
                 </tbody>
