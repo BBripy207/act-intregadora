@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import fondo from './imagenes/fondo.jpeg'; // Importar la imagen
+import images from './images'; // Importar el mapa de imágenes
 
 // Determinar la URL base del backend
 const backendUrl = window.location.hostname === 'localhost'
@@ -56,7 +56,7 @@ function App() {
             style={{
                 padding: '20px',
                 fontFamily: 'Star Jedi, Arial, sans-serif',
-                backgroundImage: `url(${fondo})`, // Usar la imagen como fondo
+                backgroundImage: `url(${images.fondo})`, // Usar la imagen de fondo
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 color: '#FFE81F',
@@ -116,6 +116,11 @@ function App() {
                                     backgroundColor: '#111'
                                 }}
                             >
+                                <img
+                                    src={images[character.name]}
+                                    alt={character.name}
+                                    style={{ width: '100%', borderRadius: '8px', marginBottom: '10px' }}
+                                />
                                 <h2 style={{ color: '#FFE81F', fontSize: '1.5rem' }}>{character.name}</h2>
                                 <p style={{ color: '#FFF' }}>{character.description}</p>
                                 <p><strong>Precio por hora:</strong> $200</p>
@@ -163,6 +168,11 @@ function App() {
                                     color: '#FFE81F'
                                 }}
                             >
+                                <img
+                                    src={images[selectedCharacter.name]}
+                                    alt={selectedCharacter.name}
+                                    style={{ width: '100%', borderRadius: '8px', marginBottom: '10px' }}
+                                />
                                 <h2>{selectedCharacter.name}</h2>
                                 <p>{selectedCharacter.description}</p>
                                 <p><strong>Precio por hora:</strong> $200</p>
