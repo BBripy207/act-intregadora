@@ -123,6 +123,19 @@ app.get('/rentals', (req, res) => {
     });
 });
 
+// Endpoint para eliminar una renta
+app.delete('/rentals/:id', (req, res) => {
+    const { id } = req.params;
+    const stmt = db.prepare('DELETE FROM rentals WHERE id = ?');
+    stmt.run(id, function (err) {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        res.status(200).json({ message: 'Renta eliminada con éxito' });
+    });
+    stmt.finalize();
+});
+
 // Crear un servidor HTTP
 const server = http.createServer(app);
 
